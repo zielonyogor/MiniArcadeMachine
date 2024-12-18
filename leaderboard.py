@@ -7,7 +7,8 @@ import database as db
 ICON_SIZE = 64
 
 class Place():
-    def __init__(self, x, y, font, data = [0, 'name_text', 100]):
+    def __init__(self, x, y, font, data = [0, '..................', '000']):
+        self.font = font
         self.text_nr = font.render(str(data[0]), False, (255, 255, 255))
         self.text_name = font.render(data[1], False, (255, 255, 255))
         self.text_score = font.render(str(data[2]), False, (255, 255, 255))
@@ -44,6 +45,19 @@ class LeaderboardScene(Scene):
 
         self.was_updated = True
 
+        db.init()
+    
+    def enter(self):
+        match2_scores = db.get_match_2_scores()
+        simonsays_scores = []
+        minesweeper_scores = []
+        for i in range(len(match2_scores)):
+            self.match_leaderboards[i].change_text(match2_scores[i])
+        for i in range(len(simonsays_scores)):
+            self.simonsays_leaderboards[i].change_text(simonsays_scores[i])
+        for i in range(len(minesweeper_scores)):
+            self.minesweeper_leaderboards[i].change_text(minesweeper_scores[i])
+
     def update(self, input):
         if input.type == KEYDOWN:
             if input.key == K_LEFT:
@@ -52,9 +66,10 @@ class LeaderboardScene(Scene):
             elif input.key == K_RIGHT:
                 self.current_index = (self.current_index + 1) % 3
                 self.was_updated = True
-                        
+
             self.was_updated = True
     def run(self):
+        # self.update_screen()
         if self.was_updated == True:
             self.was_updated = False
             self.update_screen()
@@ -65,7 +80,6 @@ class LeaderboardScene(Scene):
         self.display.blit(self.texts[self.current_index], (40, 10))
         match self.current_index:
             case 0:
-                print('match2')
                 for i in range(6):
                     self.display.blit(self.match_leaderboards[i].text_nr, 
                                       self.match_leaderboards[i].dest)
@@ -74,7 +88,6 @@ class LeaderboardScene(Scene):
                     self.display.blit(self.match_leaderboards[i].text_score, 
                                       (self.match_leaderboards[i].dest[0] + 180, self.match_leaderboards[i].dest[1]))
             case 1:
-                print('simonsays')
                 for i in range(6):
                     self.display.blit(self.simonsays_leaderboards[i].text_nr, 
                                       self.simonsays_leaderboards[i].dest)
@@ -83,7 +96,6 @@ class LeaderboardScene(Scene):
                     self.display.blit(self.simonsays_leaderboards[i].text_score, 
                                       (self.simonsays_leaderboards[i].dest[0] + 180, self.simonsays_leaderboards[i].dest[1]))
             case 2:
-                print('minesweeper')
                 for i in range(6):
                     self.display.blit(self.minesweeper_leaderboards[i].text_nr, 
                                       self.minesweeper_leaderboards[i].dest)

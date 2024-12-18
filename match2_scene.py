@@ -28,7 +28,7 @@ class Match2(Scene):
         self.pointer = fig.Pointer()
     
     def enter(self):
-        self.remaining = len(self.available_colors) / 2
+        self.remaining = 8
         # Create a ROWS x COLUMNS matrix
 
         shuffle(self.colors)
@@ -40,10 +40,10 @@ class Match2(Scene):
         self.selected = None
 
         for i in range(ROWS):
-            y = i * (ROWS + SQUARE_SIZE + 8) + 36
+            y = i * (SQUARE_SIZE + 12) + 36
             l = []
             for j in range(COLUMNS):
-                x = j * (COLUMNS + SQUARE_SIZE + 8) + 16
+                x = j * (SQUARE_SIZE + 12) + 16
                 square = fig.Square(x, y, SQUARE_SIZE, self.available_colors[i][j])
                 l.append(square)
             self.squares.append(l)
@@ -129,16 +129,16 @@ class Match2(Scene):
         self.display.fill(pygame.Color('black'))
 
         for i in range(ROWS):
-            y = i * (ROWS + SQUARE_SIZE + 8) + 36
+            y = i * (SQUARE_SIZE + 12) + 36
             for j in range(COLUMNS):
-                x = j * (COLUMNS + SQUARE_SIZE + 8) + 16
+                x = j * (SQUARE_SIZE + 12) + 16
                 if(self.squares_state[i][j] == 0):
                     self.display.blit(self.placeholder.surf, (x, y))
                 elif(self.squares_state[i][j] == 1):
                     self.display.blit(self.squares[i][j].surf, self.squares[i][j])
 
         self.update_time()
-        self.display.blit(self.time_text, (50, 2))
+        self.display.blit(self.time_text, (60, 2))
         
         pygame.draw.rect(self.display, pygame.Color('white'), self.pointer.rect, 4)
 
@@ -159,16 +159,16 @@ class Match2(Scene):
         self.display.fill(pygame.Color('black'))
 
         for i in range(ROWS):
-            y = i * (ROWS + SQUARE_SIZE + 8) + 36
+            y = i * (SQUARE_SIZE + 12) + 36
             for j in range(COLUMNS):
-                x = j * (COLUMNS + SQUARE_SIZE + 8) + 16
+                x = j * (SQUARE_SIZE + 12) + 16
                 if ((i, j) == self.selected) or ([i, j] == self.pointer.current_index):
                     self.display.blit(self.squares[i][j].surf, self.squares[i][j])
                 elif (self.squares_state[i][j] == 0):
                     self.display.blit(self.placeholder.surf, (x, y))
         
         self.update_time()
-        self.display.blit(self.time_text, (50, 2))
+        self.display.blit(self.time_text, (60, 2))
 
         pygame.display.update()
 
