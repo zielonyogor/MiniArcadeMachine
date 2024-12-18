@@ -55,7 +55,7 @@ class MinesweeperScene(Scene):
                 self.display.blit(self.squares[i][j].surf, self.squares[i][j])
         
         self.update_time()
-        self.display.blit(self.time_text, (50, 2))
+        self.display.blit(self.time_text, (60, 2))
 
         pygame.display.update()
     
