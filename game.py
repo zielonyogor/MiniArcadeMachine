@@ -6,6 +6,7 @@ from select_scene import SelectScene
 from match2_scene import Match2
 from simonsays_scene import SimonSays
 from minesweeper_scene import MinesweeperScene
+from leaderboard import LeaderboardScene
 
 SCREEN_WIDTH = 240
 SCREEN_HEIGHT = 320
@@ -28,7 +29,8 @@ class Game:
         self.scenes = {'select': SelectScene(self.screen, self.game_state_manager, self.font),
                        'match2': Match2(self.screen, self.game_state_manager, self.font),
                        'simonsays': SimonSays(self.screen, self.game_state_manager, self.font),
-                       'minesweeper': MinesweeperScene(self.screen, self.game_state_manager, self.font)}
+                       'minesweeper': MinesweeperScene(self.screen, self.game_state_manager, self.font),
+                       'leaderboard': LeaderboardScene(self.screen, self.game_state_manager, self.font)}
     
     def run(self):
         while self.is_running:

@@ -1,61 +1,96 @@
 import pygame
 from pygame.locals import *
+from game_scene import Scene
 
 import database as db
 
 ICON_SIZE = 64
 
 class Place():
-    def __init__(self, x, y, data = None):
-        self.text_nr = my_font.render(str(data[0]), False, (255, 255, 255))
-        self.text_name = my_font.render(data[1], False, (255, 255, 255))
-        self.text_score = my_font.render(str(data[2]), False, (255, 255, 255))
+    def __init__(self, x, y, font, data = [0, 'name_text', 100]):
+        self.text_nr = font.render(str(data[0]), False, (255, 255, 255))
+        self.text_name = font.render(data[1], False, (255, 255, 255))
+        self.text_score = font.render(str(data[2]), False, (255, 255, 255))
         self.dest = (x, y)
     
+    def change_text(self, new_data):
+        self.text_nr = self.font.render(str(new_data[0]), False, (255, 255, 255))
+        self.text_name = self.font.render(new_data[1], False, (255, 255, 255))
+        self.text_score = self.font.render(str(new_data[2]), False, (255, 255, 255))
+    
+class LeaderboardScene(Scene):
+    def __init__(self, display, game_state_manager, font):
+        super().__init__(display, game_state_manager, font)
+        
+        self.texts = [self.font.render('MATCH-2', False, (255, 255, 255)),
+                      self.font.render('SIMONSAYS', False, (255, 255, 255)),
+                      self.font.render('MINESWEEPER', False, (255, 255, 255))]
+        
+        self.match_leaderboards = []
+        self.simonsays_leaderboards = []
+        self.minesweeper_leaderboards = []
 
-# initialize pygame
-pygame.init()
-pygame.font.init()
-clock = pygame.time.Clock()
+        for i in range(6):
+            match_score = Place(10, 40 + 20 * i, font)
+            self.match_leaderboards.append(match_score)
 
-screen = pygame.display.set_mode((320, 240))
-pygame.display.set_caption("raspberka")
+            simon_says = Place(10, 40 + 20 * i, font)
+            self.simonsays_leaderboards.append(simon_says)
+            
+            minesweeper_score = Place(10, 40 + 20 * i, font)
+            self.minesweeper_leaderboards.append(minesweeper_score)
 
-my_font = pygame.font.SysFont('arial', 24)
+        self.current_index = 1
 
-db.setup()
+        self.was_updated = True
 
-is_running = True
+    def update(self, input):
+        if input.type == KEYDOWN:
+            if input.key == K_LEFT:
+                self.current_index = (self.current_index - 1) % 3
+                self.was_updated = True
+            elif input.key == K_RIGHT:
+                self.current_index = (self.current_index + 1) % 3
+                self.was_updated = True
+                        
+            self.was_updated = True
+    def run(self):
+        if self.was_updated == True:
+            self.was_updated = False
+            self.update_screen()
 
-pygame.display.update()
+    def update_screen(self):
+        self.display.fill(pygame.Color('black'))
+        
+        self.display.blit(self.texts[self.current_index], (40, 10))
+        match self.current_index:
+            case 0:
+                print('match2')
+                for i in range(6):
+                    self.display.blit(self.match_leaderboards[i].text_nr, 
+                                      self.match_leaderboards[i].dest)
+                    self.display.blit(self.match_leaderboards[i].text_name, 
+                                      (self.match_leaderboards[i].dest[0] + 40, self.match_leaderboards[i].dest[1]))
+                    self.display.blit(self.match_leaderboards[i].text_score, 
+                                      (self.match_leaderboards[i].dest[0] + 180, self.match_leaderboards[i].dest[1]))
+            case 1:
+                print('simonsays')
+                for i in range(6):
+                    self.display.blit(self.simonsays_leaderboards[i].text_nr, 
+                                      self.simonsays_leaderboards[i].dest)
+                    self.display.blit(self.simonsays_leaderboards[i].text_name, 
+                                      (self.simonsays_leaderboards[i].dest[0] + 40, self.simonsays_leaderboards[i].dest[1]))
+                    self.display.blit(self.simonsays_leaderboards[i].text_score, 
+                                      (self.simonsays_leaderboards[i].dest[0] + 180, self.simonsays_leaderboards[i].dest[1]))
+            case 2:
+                print('minesweeper')
+                for i in range(6):
+                    self.display.blit(self.minesweeper_leaderboards[i].text_nr, 
+                                      self.minesweeper_leaderboards[i].dest)
+                    self.display.blit(self.minesweeper_leaderboards[i].text_name, 
+                                      (self.minesweeper_leaderboards[i].dest[0] + 40, self.minesweeper_leaderboards[i].dest[1]))
+                    self.display.blit(self.minesweeper_leaderboards[i].text_score, 
+                                      (self.minesweeper_leaderboards[i].dest[0] + 180, self.minesweeper_leaderboards[i].dest[1]))
 
-# db.add_match_2_scores(('freakbear', 2137.77))
-
-match_2_data = db.get_match_2_scores()
-scores = []
-# F.E. 6 best scores
-for i in range(min(6, len(match_2_data))):
-    score = Place(10, 10 + 20 * i, (match_2_data[i]))
-    scores.append(score)
-
-db.close()
-
-
-screen.fill(pygame.Color('black'))
-
-for score in scores:
-    screen.blit(score.text_nr, score.dest)
-    screen.blit(score.text_name, (score.dest[0] + 40, score.dest[1]))
-    screen.blit(score.text_score, (score.dest[0] + 200, score.dest[1]))
-
-pygame.display.update()
-
-# here we don't have to update screen cause it doesn't matter
-while is_running:
-    for event in pygame.event.get():
-        if event.type == KEYDOWN:
-            if event.key == K_BACKSPACE:
-                is_running = False
-        elif event.type == QUIT:
-            is_running = False
-    clock.tick(10)
+        pygame.display.update()
+        self.was_updated = False
