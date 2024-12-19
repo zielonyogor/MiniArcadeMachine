@@ -69,7 +69,7 @@ class MinesweeperScene(Scene):
                     self.game_state_manager.change_state('select')
                     return
                 if db.is_better_minesweeper(self.current_time):
-                    self.game_state_manager.enter_name_scene('minesweeper', f'{self.current_time:.1f}')
+                    self.game_state_manager.enter_name_scene('minesweeper', self.current_time)
                 else:
                     self.game_state_manager.change_state('select')
             return

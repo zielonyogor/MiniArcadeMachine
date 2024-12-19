@@ -43,11 +43,11 @@ class LeaderboardScene(Scene):
 
         self.current_index = 1
 
-        self.was_updated = True
-
         db.init()
     
-    def enter(self):
+    def enter(self):    
+        self.current_index = 1
+    
         match2_scores = db.get_match_2_scores()
         simonsays_scores = db.get_simon_says_scores()
         minesweeper_scores = db.get_minesweeper_scores()
@@ -57,6 +57,7 @@ class LeaderboardScene(Scene):
             self.simonsays_leaderboards[i].change_text(simonsays_scores[i])
         for i in range(len(minesweeper_scores)):
             self.minesweeper_leaderboards[i].change_text(minesweeper_scores[i])
+        self.was_updated = True
 
     def update(self, input):
         if input.type == KEYDOWN:

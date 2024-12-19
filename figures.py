@@ -15,7 +15,7 @@ class Square(pygame.sprite.Sprite):
         self.rect.y = y
 
 class Pointer(pygame.sprite.Sprite):
-    def __init__(self, size, rows, columns, offset_x = 16, offset_y = 36, space = 12):
+    def __init__(self, size, rows, columns, offset_x = 30, offset_y = 36, space = 12):
         super(Pointer, self).__init__()
 
         self.size = size

@@ -5,6 +5,7 @@ from random import shuffle
 import figures as fig
 from game_scene import Scene
 import time
+import database as db
 
 SHOW_ALL_TIME = 3
 SHOW_TIME = 0.8
@@ -13,14 +14,16 @@ SQUARE_SIZE = 36
 ROWS = 4
 COLUMNS = 4
 
+OFFSET_X = 30
+
 class Match2(Scene):
     def __init__(self, display, game_state_manager, font) -> None:
         super().__init__(display, game_state_manager, font)
 
         self.time_text = self.font.render('Time: 0000', False, (255, 255, 255))
 
-        colors = ["#66CCFF", "#FF9966", "#FF0000", "#FF99FF", 
-                        "#00CCCC", "#000099", "#CCFFFF", "#FFFF99"] #, "#66FF66", "#006600", "#330066", "#660066"
+        colors = ["#66CCFF", "#F2973D", "#FF0000", "#FF99FF", 
+                        "#330066", "#0242BA", "#66FF66", "#FFFF57"]
         self.colors = colors + colors
         
         shuffle(self.colors)
@@ -44,7 +47,7 @@ class Match2(Scene):
             y = i * (SQUARE_SIZE + 12) + 36
             l = []
             for j in range(COLUMNS):
-                x = j * (SQUARE_SIZE + 12) + 16
+                x = j * (SQUARE_SIZE + 12) + OFFSET_X
                 square = fig.Square(x, y, SQUARE_SIZE, self.available_colors[i][j])
                 l.append(square)
             self.squares.append(l)
@@ -131,7 +134,7 @@ class Match2(Scene):
         for i in range(ROWS):
             y = i * (SQUARE_SIZE + 12) + 36
             for j in range(COLUMNS):
-                x = j * (SQUARE_SIZE + 12) + 16
+                x = j * (SQUARE_SIZE + 12) + OFFSET_X
                 if(self.squares_state[i][j] == 0):
                     self.display.blit(self.placeholder.surf, (x, y))
                 elif(self.squares_state[i][j] == 1):
@@ -148,8 +151,11 @@ class Match2(Scene):
         if time.time() - self.state_time > SHOW_TIME:
             self.selected = None
             
-            # TODO: switch to leaderboard here instead of going to 
             if self.remaining == 0:
+                if db.is_better_match_2(self.current_time):
+                    self.game_state_manager.enter_name_scene('match_2', self.current_time)
+                    return
+                
                 self.game_state_manager.change_state('select')
                 return
             
@@ -161,7 +167,7 @@ class Match2(Scene):
         for i in range(ROWS):
             y = i * (SQUARE_SIZE + 12) + 36
             for j in range(COLUMNS):
-                x = j * (SQUARE_SIZE + 12) + 16
+                x = j * (SQUARE_SIZE + 12) + OFFSET_X
                 if ((i, j) == self.selected) or ([i, j] == self.pointer.current_index):
                     self.display.blit(self.squares[i][j].surf, self.squares[i][j])
                 elif (self.squares_state[i][j] == 0):

@@ -3,6 +3,7 @@ from pygame.locals import *
 from game_scene import Scene
 
 import database as db
+import math
 
 LETTERS = 10
     
@@ -28,7 +29,7 @@ class EnterNameScene(Scene):
             self.letters_code.append(65)
         
         self.game = game
-        self.score = score
+        self.score = math.floor(score * 10) / 10
         
 
     def update(self, input):
@@ -37,7 +38,7 @@ class EnterNameScene(Scene):
                 print(self.letters_code, ' ', self.game, ' ', self.score)
                 match self.game:
                     case 'match_2':
-                        db.add_match_2_scores((''.join(chr(l) for l in self.letters_code), self.score))
+                        db.add_match_2_score((''.join(chr(l) for l in self.letters_code), self.score))
                     case 'simon_says':
                         db.add_simon_says_score((''.join(chr(l) for l in self.letters_code), self.score))
                     case 'minesweeper':

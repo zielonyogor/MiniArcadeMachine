@@ -30,16 +30,13 @@ class SelectScene(Scene):
                 match self.current_index:
                     case 0:
                         self.game_state_manager.change_state('match2')
-                        print('match2')
                     case 1:
                         self.game_state_manager.change_state('simonsays')
-                        print('simonsays')
                     case 2:
                         self.game_state_manager.change_state('minesweeper')
-                        print('minesweeper')
                     case 3:
                         self.game_state_manager.change_state('leaderboard')
-                        print('leaderboard')
+                return
                         
             self.was_updated = True
     def run(self):
