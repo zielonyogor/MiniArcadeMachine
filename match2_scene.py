@@ -3,7 +3,6 @@ from pygame.locals import *
 from random import shuffle
 
 import figures as fig
-from globals import *
 from game_scene import Scene
 import time
 
@@ -11,6 +10,8 @@ SHOW_ALL_TIME = 3
 SHOW_TIME = 0.8
 
 SQUARE_SIZE = 36
+ROWS = 4
+COLUMNS = 4
 
 class Match2(Scene):
     def __init__(self, display, game_state_manager, font) -> None:
@@ -25,7 +26,7 @@ class Match2(Scene):
         shuffle(self.colors)
         self.available_colors = [self.colors[i * COLUMNS:(i + 1) * COLUMNS] for i in range(ROWS)]
         
-        self.pointer = fig.Pointer()
+        self.pointer = fig.Pointer(SQUARE_SIZE, ROWS, COLUMNS)
     
     def enter(self):
         self.remaining = 8
@@ -52,7 +53,6 @@ class Match2(Scene):
         self.start_time = 0
         self.current_time = 0
 
-        self.squares_state = [[0 for _ in range(COLUMNS)] for _ in range(ROWS)] # 0 - nothing, 1 - selected, 2 - taken
         self.state = 'show_all' # show-all - show all squares at the start
                                 # game - basic game
                                 # show - show two selected squares
