@@ -25,3 +25,6 @@ class GameStatemanager:
     def change_state(self, new_state):
         self.current_state = new_state
         self.game.scenes[self.current_state].enter()
+    def enter_name_scene(self, game, score):
+        self.current_state = 'entername'
+        self.game.scenes[self.current_state].enter(game, score)

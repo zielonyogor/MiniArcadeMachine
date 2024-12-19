@@ -7,7 +7,7 @@ import database as db
 ICON_SIZE = 64
 
 class Place():
-    def __init__(self, x, y, font, data = [0, '..................', '000']):
+    def __init__(self, x, y, font, data = [0, '.......................', '000']):
         self.font = font
         self.text_nr = font.render(str(data[0]), False, (255, 255, 255))
         self.text_name = font.render(data[1], False, (255, 255, 255))
@@ -49,8 +49,8 @@ class LeaderboardScene(Scene):
     
     def enter(self):
         match2_scores = db.get_match_2_scores()
-        simonsays_scores = []
-        minesweeper_scores = []
+        simonsays_scores = db.get_simon_says_scores()
+        minesweeper_scores = db.get_minesweeper_scores()
         for i in range(len(match2_scores)):
             self.match_leaderboards[i].change_text(match2_scores[i])
         for i in range(len(simonsays_scores)):

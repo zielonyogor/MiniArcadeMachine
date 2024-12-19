@@ -4,7 +4,7 @@ from game_scene import Scene
 
 import database as db
 
-LETTERS = 12
+LETTERS = 10
     
 class EnterNameScene(Scene):
     def __init__(self, display, game_state_manager, font):
@@ -19,7 +19,7 @@ class EnterNameScene(Scene):
 
         self.was_updated = True
     
-    def enter(self):
+    def enter(self, game, score):
         self.letters = []
         self.letters_code = []
         for i in range(LETTERS):
@@ -27,10 +27,23 @@ class EnterNameScene(Scene):
             self.letters.append(tex)
             self.letters_code.append(65)
         
+        self.game = game
+        self.score = score
+        
 
     def update(self, input):
         if input.type == KEYDOWN:
-            if input.key == K_LEFT:
+            if input.key == K_z:
+                print(self.letters_code, ' ', self.game, ' ', self.score)
+                match self.game:
+                    case 'match_2':
+                        db.add_match_2_scores((''.join(chr(l) for l in self.letters_code), self.score))
+                    case 'simon_says':
+                        db.add_simon_says_score((''.join(chr(l) for l in self.letters_code), self.score))
+                    case 'minesweeper':
+                        db.add_minesweeper_score((''.join(chr(l) for l in self.letters_code), self.score))
+                self.game_state_manager.change_state('select')
+            elif input.key == K_LEFT:
                 self.current_index = (self.current_index - 1) % LETTERS
                 self.was_updated = True
             elif input.key == K_RIGHT:
@@ -53,7 +66,7 @@ class EnterNameScene(Scene):
         self.display.blit(self.prompt, (26, 20))
         
         for i in range(LETTERS):
-            self.display.blit(self.letters[i], (14 + 18*i, 80))
+            self.display.blit(self.letters[i], (30 + 18*i, 80))
 
         pygame.display.update()
         self.was_updated = False
@@ -61,6 +74,7 @@ class EnterNameScene(Scene):
     def update_letter(self, value):
         self.letters_code[self.current_index] = (self.letters_code[self.current_index] + value - 65) % 27 + 65
         if self.letters_code[self.current_index] == 91:
+            self.letters_code[self.current_index] = 95
             self.letters[self.current_index] = self.font.render('_', False, (255, 255, 255))
         else:
             self.letters[self.current_index] = self.font.render(str(chr(self.letters_code[self.current_index])), False, (255, 255, 255))

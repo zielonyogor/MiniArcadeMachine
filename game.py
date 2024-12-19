@@ -44,8 +44,6 @@ class Game:
                         self.is_running = False
                     elif event.key == K_x and self.game_state_manager.get_state() != 'select':
                         self.game_state_manager.change_state('select')
-                    elif event.key == K_a:
-                        self.game_state_manager.change_state('entername')
                     else:
                         self.scenes[self.game_state_manager.get_state()].update(event)
                 elif event.type == QUIT:

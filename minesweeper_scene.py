@@ -6,6 +6,7 @@ from globals import *
 from game_scene import Scene
 import time
 import random
+import database as db
 
 
 SQUARE_SIZE = 18
@@ -25,7 +26,6 @@ class MinesweeperScene(Scene):
         self.number_font = pygame.font.SysFont('arial', 20, bold=True)
         self.text_numbers = []
 
-        # Define the text and color list
         texts_and_colors = [
             ('B', (255, 0, 0)),
             ('1', (0, 0, 255)),
@@ -46,9 +46,6 @@ class MinesweeperScene(Scene):
             self.text_numbers.append(surface)
         
         self.placeholder = fig.Square(0, 0, SQUARE_SIZE, '#757575')
-        
-        self.start_time = 0
-        self.current_time = 0
     
     def enter(self):
         self.bombs = self.randomize_bombs()
@@ -59,10 +56,24 @@ class MinesweeperScene(Scene):
         self.start_time = time.time()
         self.found = 0
 
+        self.is_over = False
+        self.won = False
+
     def update(self, input):
         if input.type != KEYDOWN:
             return
-
+        
+        if self.is_over:
+            if input.key == K_z:
+                if not self.won:
+                    self.game_state_manager.change_state('select')
+                    return
+                if db.is_better_minesweeper(self.current_time):
+                    self.game_state_manager.enter_name_scene('minesweeper', f'{self.current_time:.1f}')
+                else:
+                    self.game_state_manager.change_state('select')
+            return
+        
         if input.key == K_LEFT:
             self.pointer.move(-1, 0)
         elif input.key == K_RIGHT:
@@ -78,7 +89,7 @@ class MinesweeperScene(Scene):
                 return
             if self.square_numbers[row][column] == -1:
                 print('Game Over')
-                self.game_state_manager.change_state('select')
+                self.show_end()
                 return
             if self.square_numbers[row][column] == 0:
                 self.reveal_connected_zeros(row, column)
@@ -87,9 +98,13 @@ class MinesweeperScene(Scene):
                 self.found += 1
             if self.found == ROWS * COLUMNS - 10:
                 print('Wygrana')
-                self.game_state_manager.change_state('select')
+                self.won = True
+                self.show_end()
 
     def run(self):
+        if self.is_over:
+            return
+        
         self.display.fill(pygame.Color('black'))
 
         for i in range(ROWS):
@@ -115,6 +130,25 @@ class MinesweeperScene(Scene):
 
         temp_string = f'{self.current_time:.1f}'.zfill(6)
         self.time_text = self.font.render(f'Time: {temp_string}', False, (255, 255, 255))
+
+    def show_end(self):
+        self.is_over = True
+
+        self.display.fill(pygame.Color('black'))
+
+        for i in range(ROWS):
+            for j in range(COLUMNS):
+                y = i * (SQUARE_SIZE + 4) + 36
+                x = j * (SQUARE_SIZE + 4) + 24
+                self.display.blit(self.square_icon.surf,  (x, y))
+                if self.square_numbers[i][j] > 0:
+                    self.display.blit(self.text_numbers[self.square_numbers[i][j]], (x, y))
+                elif self.square_numbers[i][j] == -1:
+                    self.display.blit(self.text_numbers[0], (x, y))
+
+        self.display.blit(self.time_text, (60, 2))
+
+        pygame.display.update()
 
     # algorithm related methods
     def randomize_bombs(self):
