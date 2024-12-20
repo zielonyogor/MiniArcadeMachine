@@ -42,4 +42,3 @@ class Pointer(pygame.sprite.Sprite):
     def update_position(self):
         self.rect.x = self.current_index[1] * (self.size + self.space) + self.offset_x - 4
         self.rect.y = self.current_index[0] * (self.size + self.space) + self.offset_y - 4
-

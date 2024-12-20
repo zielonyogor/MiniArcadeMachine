@@ -44,7 +44,7 @@ class SelectScene(Scene):
         
         self.display.blit(self.levels[(self.current_index - 1 + 4) % 4].surf, (10, 100))
         
-        self.display.blit(self.texts[self.current_index], (60, 70))
+        self.display.blit(self.texts[self.current_index], (120 - self.texts[self.current_index].get_width() // 2, 40))
         self.display.blit(self.levels[self.current_index].surf, (90, 100))
         
         self.display.blit(self.levels[(self.current_index + 1) % 4].surf, (170, 100))

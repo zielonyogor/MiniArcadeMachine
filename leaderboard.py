@@ -32,13 +32,13 @@ class LeaderboardScene(Scene):
         self.minesweeper_leaderboards = []
 
         for i in range(6):
-            match_score = Place(10, 40 + 20 * i, font)
+            match_score = Place(10, 58 + 28 * i, font)
             self.match_leaderboards.append(match_score)
 
-            simon_says = Place(10, 40 + 20 * i, font)
+            simon_says = Place(10, 58 + 28 * i, font)
             self.simonsays_leaderboards.append(simon_says)
             
-            minesweeper_score = Place(10, 40 + 20 * i, font)
+            minesweeper_score = Place(10, 58 + 28 * i, font)
             self.minesweeper_leaderboards.append(minesweeper_score)
 
         self.current_index = 1
@@ -78,14 +78,14 @@ class LeaderboardScene(Scene):
     def update_screen(self):
         self.display.fill(pygame.Color('black'))
         
-        self.display.blit(self.texts[self.current_index], (40, 10))
+        self.display.blit(self.texts[self.current_index], (120 - self.texts[self.current_index].get_width() // 2, 16))
         match self.current_index:
             case 0:
                 for i in range(6):
                     self.display.blit(self.match_leaderboards[i].text_nr, 
                                       self.match_leaderboards[i].dest)
                     self.display.blit(self.match_leaderboards[i].text_name, 
-                                      (self.match_leaderboards[i].dest[0] + 40, self.match_leaderboards[i].dest[1]))
+                                      (self.match_leaderboards[i].dest[0] + 36, self.match_leaderboards[i].dest[1]))
                     self.display.blit(self.match_leaderboards[i].text_score, 
                                       (self.match_leaderboards[i].dest[0] + 180, self.match_leaderboards[i].dest[1]))
             case 1:
@@ -93,7 +93,7 @@ class LeaderboardScene(Scene):
                     self.display.blit(self.simonsays_leaderboards[i].text_nr, 
                                       self.simonsays_leaderboards[i].dest)
                     self.display.blit(self.simonsays_leaderboards[i].text_name, 
-                                      (self.simonsays_leaderboards[i].dest[0] + 40, self.simonsays_leaderboards[i].dest[1]))
+                                      (self.simonsays_leaderboards[i].dest[0] + 36, self.simonsays_leaderboards[i].dest[1]))
                     self.display.blit(self.simonsays_leaderboards[i].text_score, 
                                       (self.simonsays_leaderboards[i].dest[0] + 180, self.simonsays_leaderboards[i].dest[1]))
             case 2:
@@ -101,7 +101,7 @@ class LeaderboardScene(Scene):
                     self.display.blit(self.minesweeper_leaderboards[i].text_nr, 
                                       self.minesweeper_leaderboards[i].dest)
                     self.display.blit(self.minesweeper_leaderboards[i].text_name, 
-                                      (self.minesweeper_leaderboards[i].dest[0] + 40, self.minesweeper_leaderboards[i].dest[1]))
+                                      (self.minesweeper_leaderboards[i].dest[0] + 36, self.minesweeper_leaderboards[i].dest[1]))
                     self.display.blit(self.minesweeper_leaderboards[i].text_score, 
                                       (self.minesweeper_leaderboards[i].dest[0] + 180, self.minesweeper_leaderboards[i].dest[1]))
 

@@ -16,8 +16,6 @@ class EnterNameScene(Scene):
         self.letters = []
         self.letters_code = []
 
-        self.current_index = 0
-
         self.was_updated = True
     
     def enter(self, game, score):
@@ -31,11 +29,15 @@ class EnterNameScene(Scene):
         self.game = game
         self.score = math.floor(score * 10) / 10
         
-
+        self.current_index = 0
+        
     def update(self, input):
         if input.type == KEYDOWN:
             if input.key == K_z:
                 print(self.letters_code, ' ', self.game, ' ', self.score)
+                for i in range(len(self.letters_code)):
+                    if self.letters_code[i] == 91:
+                        self.letters_code[i] = 95
                 match self.game:
                     case 'match_2':
                         db.add_match_2_score((''.join(chr(l) for l in self.letters_code), self.score))
@@ -67,7 +69,7 @@ class EnterNameScene(Scene):
         self.display.blit(self.prompt, (26, 20))
         
         for i in range(LETTERS):
-            self.display.blit(self.letters[i], (30 + 18*i, 80))
+            self.display.blit(self.letters[i], (30 + 18*i, 120))
 
         pygame.display.update()
         self.was_updated = False
@@ -75,7 +77,6 @@ class EnterNameScene(Scene):
     def update_letter(self, value):
         self.letters_code[self.current_index] = (self.letters_code[self.current_index] + value - 65) % 27 + 65
         if self.letters_code[self.current_index] == 91:
-            self.letters_code[self.current_index] = 95
             self.letters[self.current_index] = self.font.render('_', False, (255, 255, 255))
         else:
             self.letters[self.current_index] = self.font.render(str(chr(self.letters_code[self.current_index])), False, (255, 255, 255))
