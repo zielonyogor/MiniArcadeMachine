@@ -174,7 +174,7 @@ class Match2(Scene):
                     self.display.blit(self.placeholder.surf, (x, y))
         
         self.update_time()
-        self.display.blit(self.time_text, (60, 2))
+        self.display.blit(self.time_text, (120 - self.time_text.get_width() // 2, 2))
 
         pygame.display.update()
 

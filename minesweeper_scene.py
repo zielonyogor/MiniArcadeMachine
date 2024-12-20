@@ -121,7 +121,7 @@ class MinesweeperScene(Scene):
         pygame.draw.rect(self.display, pygame.Color('white'), self.pointer.rect, 4)
 
         self.update_time()
-        self.display.blit(self.time_text, (60, 2))
+        self.display.blit(self.time_text, (120 - self.time_text.get_width() // 2, 2))
 
         pygame.display.update()
     
