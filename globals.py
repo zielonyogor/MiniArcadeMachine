@@ -1,4 +1,0 @@
-ROWS = 4
-COLUMNS = 4
-
-ICON_SIZE = 64
